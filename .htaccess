@@ -1,0 +1,32 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Force HTTPS
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Redirect www to non-www
+    RewriteCond %{HTTP_HOST} ^www\.kgit\.in$ [NC]
+    RewriteRule ^(.*)$ https://kgit.in/$1 [L,R=301]
+
+    # 🔹 REMOVE subdomain redirect block — allow subdomains to work
+
+    # Redirect all requests to Laravel public folder
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+    
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+
+    <FilesMatch "\.(css|js)$">
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+
+    <FilesMatch "\.(woff|woff2|ttf|otf|eot)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    
+    AddOutputFilterByType DEFLATE application/javascript
+    
+</IfModule>
